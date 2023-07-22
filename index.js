@@ -4,14 +4,15 @@ const asyncHandler = require('express-async-handler');
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue, Filter } = require('firebase-admin/firestore');
 
-//const serviceAccount = require('./budget-tracker-8c648-firebase-adminsdk-81i0g-6c602e2b48.json');
+const serviceAccount = require('./keys/wardrobe-615b4-8afe0e2d1873.json');
+const { FirestoreManager } = require('./utils');
 
 initializeApp({
   credential: cert(serviceAccount)
 });
 
 const db = getFirestore();
-
+const fsManager = new FirestoreManager(db); 
 
 
 const app = express();
@@ -22,28 +23,25 @@ app.get('/test', (req,res)=>{
     res.send('hello world')
 })
 
-app.get('/test-add', asyncHandler( async (req,res)=>{
-    const docRef = db.collection('users').doc('alovelace');
+app.use(express.json()); 
 
-    await docRef.set({
-        first: 'Ada',
-        last: 'Lovelace2',
-        born: 1815
-    });
-    
-    
+app.post('/api/create-user', asyncHandler( async (req,res)=>{
+    const data = req.body; 
+    const userDetails = await fsManager.addUser(data); 
+    res.json({message: "Success", user: userDetails});  
 }))
 
-app.get('/test-query', asyncHandler(async (req,res)=>{
-    const snapshot = await db.collection('users').get();
-    let infoTemp = ''; 
-    snapshot.forEach((doc) => {
-        infoTemp += doc.id + '=>' + JSON.stringify(doc.data()) + '\n'; 
+app.post('/api/create-item', asyncHandler( async (req,res)=>{
+    const data = req.body; 
+    const itemDetails = await fsManager.addItem(data); 
+    res.json({message: "Success", item: itemDetails});  
+}))
 
-    });
-    const info = infoTemp; 
-    res.send(info); 
-})); 
+app.post('/api/create-outfit', asyncHandler( async (req,res)=>{
+    const data = req.body; 
+    const outfitDetails = await fsManager.addOutfit(data); 
+    res.json({message: "Success", item: outfitDetails});  
+}))
 
 
 app.listen(PORT, (error) =>{
