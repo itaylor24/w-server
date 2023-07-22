@@ -11,6 +11,7 @@ initializeApp({
   credential: cert(serviceAccount)
 });
 
+
 const db = getFirestore();
 const fsManager = new FirestoreManager(db); 
 
