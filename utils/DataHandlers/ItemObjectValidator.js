@@ -9,7 +9,9 @@ class Item{
         }
 
         this.name = data.name; 
+        this.imageURL = data.imageURL ?? ''; 
         this.description = data.description ?? "";
+        this.fileRef = data.fileRef ?? ''; 
         this.id = createId(data.username, data.name); 
         this.doc = db.collection('users').doc(data.username).collection('items').doc(this.id);
     }
@@ -17,7 +19,9 @@ class Item{
     serialize(){
         return {
             name: this.name, 
-            description: this.description
+            description: this.description, 
+            image: this.imageURL,
+            fileRef: this.fileRef
         }
     }
 

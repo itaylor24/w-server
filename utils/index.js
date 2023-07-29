@@ -1,6 +1,8 @@
-FirestoreManager = require('./FirestoreManager'); 
+const compressItemImage = require('./ImageCompressor');
+const FirestoreManager = require('./FirestoreManager'); 
 
 module.exports = {
     FirestoreManager, 
+    compressItemImage,
 }
      
